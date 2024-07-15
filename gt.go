@@ -10,12 +10,15 @@ import (
 )
 
 type Args struct {
-	Help       bool
-	Version    bool
-	ShowHidden bool
-	Unsort     bool
-	Summary    bool
-	Dir        string
+	Help         bool
+	Version      bool
+	ShowHidden   bool
+	Unsort       bool
+	Summary      bool
+	DirsOnly     bool
+	FullPath     bool
+	OrderByExt   bool
+	Dir          string
 }
 
 var version = "gt: v0.1.0"
@@ -57,6 +60,7 @@ var icons = map[string]string{
 	".h":          "\033[35m\033[0m",
 	".hpp":        "\033[35m\033[0m",
 	".deb":        "\033[90m\033[0m",
+	".yml":        "\033[31m\033[0m",
 	".yaml":       "\033[31m\033[0m",
 	".html":       "\033[38;5;208m\033[0m",
 	".xml":        "\033[38;5;208m󰗀\033[0m",
@@ -69,7 +73,7 @@ var icons = map[string]string{
 	".xbps":       "\033[38;5;22m\033[0m",
 	".svg":        "\033[35m󰜡\033[0m",
 	".conf":       "\033[37m\033[0m",
-	".gitignore":  "\033[35m󰊢\033[0m",
+	".gitignore":  "\033[38;5;208m󰊢\033[0m",
 	".md":         "\033[34m\033[0m",
 	".rb":         "\033[31m󰴭\033[0m",
 	".pdf":        "\033[38;5;196m󰈦\033[0m",
@@ -102,6 +106,9 @@ func parseArgs() Args {
 	flag.BoolVar(&args.Unsort, "unsort", false, "unsort files")
 	flag.BoolVar(&args.Summary, "m", false, "show summary")
 	flag.BoolVar(&args.Summary, "summary", false, "show summary")
+	flag.BoolVar(&args.DirsOnly, "d", false, "list directories only")
+	flag.BoolVar(&args.FullPath, "f", false, "print full path prefix to each file")
+	flag.BoolVar(&args.OrderByExt, "o", false, "order files based on extension")
 
 	flag.Parse()
 
@@ -124,12 +131,23 @@ func walk(directory, prefix string, args Args) error {
 
 	for _, entry := range entries {
 		if args.ShowHidden || entry.Name()[0] != '.' {
+			if args.DirsOnly && !entry.IsDir() {
+				continue
+			}
 			filesList = append(filesList, entry)
 		}
 	}
 
 	if !args.Unsort {
 		sort.Slice(filesList, func(i, j int) bool {
+			if args.OrderByExt {
+				extI := filepath.Ext(filesList[i].Name())
+				extJ := filepath.Ext(filesList[j].Name())
+				if extI == extJ {
+					return strings.ToLower(filesList[i].Name()) < strings.ToLower(filesList[j].Name())
+				}
+				return extI < extJ
+			}
 			return strings.ToLower(filesList[i].Name()) < strings.ToLower(filesList[j].Name())
 		})
 	}
@@ -140,6 +158,11 @@ func walk(directory, prefix string, args Args) error {
 			pointers = finalPointers
 		} else {
 			pointers = innerPointers
+		}
+
+		fullPath := entry.Name()
+		if args.FullPath {
+			fullPath = filepath.Join(directory, entry.Name())
 		}
 
 		fmt.Print(prefix + pointers[0])
@@ -156,7 +179,7 @@ func walk(directory, prefix string, args Args) error {
 			}
 		}
 
-		fmt.Print(icon + " " + entry.Name() + "\n")
+		fmt.Print(icon + " " + fullPath + "\n")
 
 		if entry.IsDir() {
 			dirs++

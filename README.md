@@ -46,3 +46,6 @@ Options:
 * -s --show-hidden   show hidden files
 * -u --unsort unsort files
 * -m --summary show  summary
+* -d                 list directories only
+* -o                 order files based on extension
+* -f                 print full path prefix to each file
