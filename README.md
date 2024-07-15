@@ -1,4 +1,4 @@
-# ctree
+# gt
 
 `gt` is a command-line tool written in Go that displays a tree of files
 and directories with colored icons based on file types.
@@ -18,7 +18,7 @@ and directories with colored icons based on file types.
 2. Clone the repository:
 ```bash
    git clone https://github.com/yourusername/gt.git
-   cd ctree
+   cd gt
    go build gt.go
    ./gt [OPTIONS] [DIRECTORY]
 ```
