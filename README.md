@@ -26,10 +26,12 @@ and directories with colored icons based on file types.
 ## Usage
 
 gt [OPTIONS] [DIRECTORY]
+
 Options:
-  -h, --help          show help
-  -v, --version       show version
-  -s, --show-hidden   show hidden files
-  -u, --unsort        unsort files
-  -m, --summary       show summary
+
+-h, --help          show help
+-v, --version       show version
+-s, --show-hidden   show hidden files
+-u, --unsort        unsort files
+-m, --summary       show summary
 
