@@ -12,13 +12,16 @@ displays a tree of files and directories with colored icons.
 - Option to unsort files.
 - Displays summary of files and directories.
 - Colored icons based on file types.
+- List directories.
+- Order files.
+- Print full path.
 
 ## Installation
 
 1. Ensure you have Go installed. You can download it from
    [golang.org](https://golang.org/).
 
-2. Clone the repository:
+2. Clone the repository
 
 ```bash
    git clone https://github.com/yourusername/gt.git
@@ -41,11 +44,17 @@ displays a tree of files and directories with colored icons.
 
 Options:
 
-* -h --help          show help
-* -v --version       show version
-* -s --show-hidden   show hidden files
-* -u --unsort unsort files
-* -m --summary show  summary
-* -d                 list directories only
-* -o                 order files based on extension
-* -f                 print full path prefix to each file
+| Option | Description                             |
+|--------|-----------------------------------------|
+| -h     | Show help                               |
+| -v     | Show version                            |
+| -s     | Show hidden files                       |
+| -u     | Files                                   |
+| -m     | Summary                                 |
+| -d     | List directories only                   |
+| -o     | Order files based on extension          |
+| -f     | Print full path prefix to each file     |
+
+## Contributing
+
+Contributions, issues, and feature requests are always welcome! Thank you.
