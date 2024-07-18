@@ -97,15 +97,10 @@ var finalPointers = []string{"└── ", "    "}
 func parseArgs() Args {
 	var args Args
 	flag.BoolVar(&args.Help, "h", false, "show help")
-	flag.BoolVar(&args.Help, "help", false, "show help")
 	flag.BoolVar(&args.Version, "v", false, "show version")
-	flag.BoolVar(&args.Version, "version", false, "show version")
 	flag.BoolVar(&args.ShowHidden, "s", false, "show hidden files")
-	flag.BoolVar(&args.ShowHidden, "show-hidden", false, "show hidden files")
 	flag.BoolVar(&args.Unsort, "u", false, "unsort files")
-	flag.BoolVar(&args.Unsort, "unsort", false, "unsort files")
 	flag.BoolVar(&args.Summary, "m", false, "show summary")
-	flag.BoolVar(&args.Summary, "summary", false, "show summary")
 	flag.BoolVar(&args.DirsOnly, "d", false, "list directories only")
 	flag.BoolVar(&args.FullPath, "f", false, "print full path prefix to each file")
 	flag.BoolVar(&args.OrderByExt, "o", false, "order files based on extension")
