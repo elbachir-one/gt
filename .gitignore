@@ -1,3 +1,6 @@
 gt
 build.sh
 test/
+.goreleaser.yaml
+
+dist/
