@@ -21,7 +21,7 @@ type Args struct {
 	Dir          string
 }
 
-var version = "gt: v0.1.0"
+var version = "gt: v0.2.1"
 
 var icons = map[string]string{
 	".c":          "\033[34m \033[0m",
