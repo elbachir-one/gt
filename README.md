@@ -18,8 +18,7 @@ and directories with colored icons.
 
 ## Installation
 
-1. Ensure you have Go installed. You can download it from
-   [golang.org](https://golang.org/).
+1. Ensure you have [Go](https://go.dev/dl/) installed, and also [Nerd Fonts](https://www.nerdfonts.com)
 
 2. Clone the repository
 
@@ -37,7 +36,7 @@ and directories with colored icons.
 ```
 
 
-##### Note: gt is in the [AUR](https://aur.archlinux.org/packages/gt), and a [template](https://github.com/elbachir-one/void-templates) is available for Void Linux.
+#### Note: gt is in the [AUR](https://aur.archlinux.org/packages/gt), and a [template](https://github.com/elbachir-one/void-templates) is available for Void Linux.
 
 ## Usage
 
