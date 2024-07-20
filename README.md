@@ -24,7 +24,7 @@ and directories with colored icons.
 2. Clone the repository
 
 ```bash
-   git clone https://github.com/yourusername/gt.git
+   git clone https://github.com/elbachir-one/gt
    cd gt
    go build gt.go
    ./gt
@@ -35,6 +35,9 @@ and directories with colored icons.
 ```bash
     sudo cp gt /usr/local/bin/gt
 ```
+
+
+##### Note: gt is in the [AUR](https://aur.archlinux.org/packages/gt), and a [template](https://github.com/elbachir-one/void-templates) is available for Void Linux.
 
 ## Usage
 
