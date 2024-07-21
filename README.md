@@ -67,6 +67,17 @@ sudo xbps-install -R hostdir/binpkgs gt
     gt [OPTIONS] [DIRECTORY]
 ```
 
+#### Note: you can also pip `gt` to `fzf` or `less`.
+
+```bash
+gt | less -r
+```
+`-r` is an option for less to repaint the screen.
+
+```bash
+gt | fzf --ansi
+```
+
 Options:
 
 | Option  | Description                                                                                                                                      |
