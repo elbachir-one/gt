@@ -38,6 +38,29 @@ and directories with colored icons.
 
 #### Note: gt is in the [AUR](https://aur.archlinux.org/packages/gt), and a [template](https://github.com/elbachir-one/void-templates) is available for Void Linux.
 
+- Arch Linux
+```bash
+yay -Sy gt
+```
+
+- Void Linux
+
+```bash
+git clone --depth=1 https://github.com/void-linux/packages
+cd void-packages/
+./xbps-install binary-bootstrap
+mkdir srcpkgs/gt
+vim srcpkgs/gt/template
+```
+Past the content of this
+[template](https://github.com/elbachir-one/void-templates) to your local
+template and save it.
+
+```bash
+./xbps-install pkg gt
+sudo xbps-install -R hostdir/binpkgs gt
+```
+
 ## Usage
 
 ```bash
