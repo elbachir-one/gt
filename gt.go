@@ -19,6 +19,7 @@ type Args struct {
 	FullPath     bool
 	OrderByExt   bool
 	Dir          string
+	Depth        int
 }
 
 var version = "gt: v0.2.1"
@@ -104,6 +105,7 @@ func parseArgs() Args {
 	flag.BoolVar(&args.DirsOnly, "d", false, "list directories only")
 	flag.BoolVar(&args.FullPath, "f", false, "print full path prefix to each file")
 	flag.BoolVar(&args.OrderByExt, "o", false, "order files based on extension")
+	flag.IntVar(&args.Depth, "depth", -1, "depth to which the tree should be displayed")
 
 	flag.Parse()
 
@@ -116,7 +118,11 @@ func parseArgs() Args {
 	return args
 }
 
-func walk(directory, prefix string, args Args) error {
+func walk(directory, prefix string, args Args, currentDepth int) error {
+	if args.Depth != -1 && currentDepth > args.Depth {
+		return nil
+	}
+
 	entries, err := os.ReadDir(directory)
 	if err != nil {
 		return err
@@ -164,23 +170,23 @@ func walk(directory, prefix string, args Args) error {
 		icon := icons["other"]
 
 		if entry.IsDir() {
-			icon = icons["directory"]
+			fmt.Print(icons["directory"])
+			dirs++
 		} else if entry.Type()&os.ModeSymlink != 0 {
-			icon = icons["symlink"]
+			fmt.Print(icons["symlink"])
 		} else {
 			ext := filepath.Ext(entry.Name())
-			if ic, found := icons[ext]; found {
-				icon = ic
+			if val, ok := icons[ext]; ok {
+				fmt.Print(val)
+			} else {
+				fmt.Print(icon)
 			}
+			files++
 		}
-
-		fmt.Print(icon + " " + fullPath + "\n")
+		fmt.Println(fullPath)
 
 		if entry.IsDir() {
-			dirs++
-			walk(filepath.Join(directory, entry.Name()), prefix+pointers[1], args)
-		} else {
-			files++
+			walk(filepath.Join(directory, entry.Name()), prefix+pointers[1], args, currentDepth+1)
 		}
 	}
 
@@ -190,23 +196,19 @@ func walk(directory, prefix string, args Args) error {
 func main() {
 	args := parseArgs()
 
+	if args.Help {
+		flag.Usage()
+		return
+	}
+
 	if args.Version {
 		fmt.Println(version)
 		return
 	}
 
-	if args.Help {
-		fmt.Println(version)
-		fmt.Println("Shows a tree of files.")
-		fmt.Println("Arguments:")
-		flag.PrintDefaults()
-		return
-	}
-
-	fmt.Println(args.Dir)
-	err := walk(args.Dir, "", args)
+	err := walk(args.Dir, "", args, 1)
 	if err != nil {
-		fmt.Println("Error accessing directory:", err)
+		fmt.Println("Error:", err)
 	}
 
 	if args.Summary {
