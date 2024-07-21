@@ -69,16 +69,17 @@ sudo xbps-install -R hostdir/binpkgs gt
 
 Options:
 
-| Option | Description                             |
-|--------|-----------------------------------------|
-| -h     | Show help                               |
-| -v     | Show version                            |
-| -s     | Show hidden files                       |
-| -u     | Files                                   |
-| -m     | Summary                                 |
-| -d     | List directories only                   |
-| -o     | Order files based on extension          |
-| -f     | Print full path prefix to each file     |
+| Option  | Description                                                                                                                                      |
+|---------|--------------------------------------------------------------------------------------------------------------------------------------------------|
+| -h      | Show help                                                                                                                                        |
+| -v      | Show version                                                                                                                                     |
+| -s      | Show hidden files                                                                                                                                |
+| -u      | Files                                                                                                                                            |
+| -m      | Summary                                                                                                                                          |
+| -d      | List directories only                                                                                                                            |
+| -o      | Order files based on extension                                                                                                                   |
+| -f      | Print full path prefix to each file                                                                                                              |
+| --depth | Depth to which the tree should be displaye the default is -1 `gt --depth 1` any number greater than or equal to 1 can be used.                   |
 
 ## Contributing
 
