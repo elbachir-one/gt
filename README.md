@@ -24,8 +24,8 @@ and directories with colored icons.
 
 ```bash
    git clone https://github.com/elbachir-one/gt
-   cd gt
-   go build gt.go
+   cd gt/
+   go build
    ./gt
 ```
 
@@ -33,6 +33,7 @@ and directories with colored icons.
 
 ```bash
     sudo cp gt /usr/local/bin/gt
+    gt
 ```
 
 
@@ -40,25 +41,25 @@ and directories with colored icons.
 
 - Arch Linux
 ```bash
-yay -Sy gt
+    yay -S gt
 ```
 
 - Void Linux
 
 ```bash
-git clone --depth=1 https://github.com/void-linux/packages
-cd void-packages/
-./xbps-install binary-bootstrap
-mkdir srcpkgs/gt
-vim srcpkgs/gt/template
+    git clone --depth=1 https://github.com/void-linux/packages
+    cd void-packages/
+    ./xbps-install binary-bootstrap
+    mkdir srcpkgs/gt
+    vim srcpkgs/gt/template
 ```
 Past the content of this
 [template](https://github.com/elbachir-one/void-templates) to your local
 template and save it.
 
 ```bash
-./xbps-install pkg gt
-sudo xbps-install -R hostdir/binpkgs gt
+    ./xbps-install pkg gt
+    sudo xbps-install -R hostdir/binpkgs gt
 ```
 
 ## Usage
@@ -70,14 +71,14 @@ sudo xbps-install -R hostdir/binpkgs gt
 #### Note: you can also pip `gt` to `fzf` or `less`.
 
 ```bash
-gt | less -r
+    gt | less -r
 ```
 ![gt and less](https://i.postimg.cc/d3tzmKjs/2024-07-21-18-05.png)
 
 `-r` is an option for less to repaint the screen.
 
 ```bash
-gt | fzf --ansi
+    gt | fzf --ansi
 ```
 ![gt and fzf](https://i.postimg.cc/C5P9c6cj/2024-07-21-18-06.png)
 
