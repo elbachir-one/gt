@@ -49,7 +49,7 @@ and directories with colored icons.
 ```bash
     git clone --depth=1 https://github.com/void-linux/packages
     cd void-packages/
-    ./xbps-install binary-bootstrap
+    ./xbps-src binary-bootstrap
     mkdir srcpkgs/gt
     vim srcpkgs/gt/template
 ```
@@ -58,7 +58,7 @@ Past the content of this
 template and save it.
 
 ```bash
-    ./xbps-install pkg gt
+    ./xbps-src pkg gt
     sudo xbps-install -R hostdir/binpkgs gt
 ```
 
