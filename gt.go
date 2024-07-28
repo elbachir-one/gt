@@ -9,20 +9,27 @@ import (
 	"strings"
 )
 
-type Args struct {
-	Help         bool
-	Version      bool
-	ShowHidden   bool
-	Unsort       bool
-	Summary      bool
-	DirsOnly     bool
-	FullPath     bool
-	OrderByExt   bool
-	Dir          string
-	Depth        int
-}
-
-var version = "gt: v0.2.1"
+const (
+	helpDescription        = "show help"
+	versionDescription     = "show version"
+	showHiddenDescription  = "show hidden files"
+	unsortDescription      = "unsort files"
+	summaryDescription     = "show summary"
+	dirsOnlyDescription    = "list directories only"
+	fullPathDescription    = "print full path prefix to each file"
+	orderByExtDescription  = "order files based on extension"
+	depthDescription       = "depth to which the tree should be displayed"
+	defaultVersion         = "gt: v0.4.1"
+	defaultDirectory       = "."
+	iconOther              = "\033[1m \033[0m"
+	iconDirectory          = "\033[34;1m \033[0m"
+	iconSymlink            = "\033[36m \033[0m"
+	iconExecutable         = "\033[32m \033[0m"
+	innerPointer           = "├── "
+	finalPointer           = "└── "
+	innerPointerSpace      = "│   "
+	finalPointerSpace      = "    "
+)
 
 var icons = map[string]string{
 	".c":          "\033[34m \033[0m",
@@ -34,7 +41,7 @@ var icons = map[string]string{
 	".php":        "\033[38;5;39m \033[0m",
 	".sqlite":     "\033[38;5;22m \033[0m",
 	".sh":         "\033[32m \033[0m",
-	".iso":        "\033[37m \033[0m",
+	".iso":        "\033[37m󰨣 \033[0m",
 	".java":       "\033[31m \033[0m",
 	".ino":        "\033[34m \033[0m",
 	".rs":         "\033[90m \033[0m",
@@ -67,6 +74,7 @@ var icons = map[string]string{
 	".xml":        "\033[38;5;208m󰗀 \033[0m",
 	".py":         "\033[38;5;172m \033[0m",
 	".mp4":        "\033[38;5;198m󰕧 \033[0m",
+	".mkv":        "\033[33m󰃽 \033[0m",
 	".mp3":        "\033[38;5;39m \033[0m",
 	".gif":        "\033[38;5;198m󰵸 \033[0m",
 	".toml":       "\033[38;5;208m \033[0m",
@@ -85,34 +93,45 @@ var icons = map[string]string{
 	".ttf":        "\033[97m \033[0m",
 	".otf":        "\033[97m󰛖 \033[0m",
 	".db":         "\033[97m󰆼 \033[0m",
+	".exe":        "\033[34m \033[0m",
 	"directory":   "\033[34;1m \033[0m",
 	"other":       "\033[1m \033[0m",
 	"symlink":     "\033[36m \033[0m",
 }
 
-var dirs, files int
+type Args struct {
+	Help         bool
+	Version      bool
+	ShowHidden   bool
+	Unsort       bool
+	Summary      bool
+	DirsOnly     bool
+	FullPath     bool
+	OrderByExt   bool
+	Dir          string
+	Depth        int
+}
 
-var innerPointers = []string{"├── ", "│   "}
-var finalPointers = []string{"└── ", "    "}
+var dirs, files int
 
 func parseArgs() Args {
 	var args Args
-	flag.BoolVar(&args.Help, "h", false, "show help")
-	flag.BoolVar(&args.Version, "v", false, "show version")
-	flag.BoolVar(&args.ShowHidden, "s", false, "show hidden files")
-	flag.BoolVar(&args.Unsort, "u", false, "unsort files")
-	flag.BoolVar(&args.Summary, "m", false, "show summary")
-	flag.BoolVar(&args.DirsOnly, "d", false, "list directories only")
-	flag.BoolVar(&args.FullPath, "f", false, "print full path prefix to each file")
-	flag.BoolVar(&args.OrderByExt, "o", false, "order files based on extension")
-	flag.IntVar(&args.Depth, "depth", -1, "depth to which the tree should be displayed")
+	flag.BoolVar(&args.Help, "?", false, helpDescription)
+	flag.BoolVar(&args.Version, "v", false, versionDescription)
+	flag.BoolVar(&args.ShowHidden, "s", false, showHiddenDescription)
+	flag.BoolVar(&args.Unsort, "u", false, unsortDescription)
+	flag.BoolVar(&args.Summary, "m", false, summaryDescription)
+	flag.BoolVar(&args.DirsOnly, "d", false, dirsOnlyDescription)
+	flag.BoolVar(&args.FullPath, "f", false, fullPathDescription)
+	flag.BoolVar(&args.OrderByExt, "o", false, orderByExtDescription)
+	flag.IntVar(&args.Depth, "t", -1, depthDescription)
 
 	flag.Parse()
 
 	if len(flag.Args()) > 0 {
 		args.Dir = flag.Args()[0]
 	} else {
-		args.Dir = "."
+		args.Dir = defaultDirectory
 	}
 
 	return args
@@ -125,72 +144,103 @@ func walk(directory, prefix string, args Args, currentDepth int) error {
 
 	entries, err := os.ReadDir(directory)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to read directory %s: %w", directory, err)
 	}
 
-	var filesList []os.DirEntry
+	filesList := filterEntries(entries, args)
+	sortEntries(filesList, args)
 
+	for i, entry := range filesList {
+		printEntry(entry, prefix, i == len(filesList)-1, directory, args)
+		if entry.IsDir() {
+			if err := walk(filepath.Join(directory, entry.Name()), prefix+getNextPrefix(i, len(filesList)), args, currentDepth+1); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func filterEntries(entries []os.DirEntry, args Args) []os.DirEntry {
+	var filteredEntries []os.DirEntry
 	for _, entry := range entries {
 		if args.ShowHidden || entry.Name()[0] != '.' {
 			if args.DirsOnly && !entry.IsDir() {
 				continue
 			}
-			filesList = append(filesList, entry)
+			filteredEntries = append(filteredEntries, entry)
 		}
 	}
+	return filteredEntries
+}
 
+func sortEntries(entries []os.DirEntry, args Args) {
 	if !args.Unsort {
-		sort.Slice(filesList, func(i, j int) bool {
+		sort.Slice(entries, func(i, j int) bool {
 			if args.OrderByExt {
-				extI := filepath.Ext(filesList[i].Name())
-				extJ := filepath.Ext(filesList[j].Name())
+				extI := filepath.Ext(entries[i].Name())
+				extJ := filepath.Ext(entries[j].Name())
 				if extI == extJ {
-					return strings.ToLower(filesList[i].Name()) < strings.ToLower(filesList[j].Name())
+					return strings.ToLower(entries[i].Name()) < strings.ToLower(entries[j].Name())
 				}
 				return extI < extJ
 			}
-			return strings.ToLower(filesList[i].Name()) < strings.ToLower(filesList[j].Name())
+			return strings.ToLower(entries[i].Name()) < strings.ToLower(entries[j].Name())
 		})
 	}
+}
 
-	for i, entry := range filesList {
-		var pointers []string
-		if i == len(filesList)-1 {
-			pointers = finalPointers
-		} else {
-			pointers = innerPointers
-		}
+func printEntry(entry os.DirEntry, prefix string, isLast bool, directory string, args Args) {
+	icon := getIcon(entry)
+	fullPath := getFullPath(entry, directory, args)
 
-		fullPath := entry.Name()
-		if args.FullPath {
-			fullPath = filepath.Join(directory, entry.Name())
-		}
+	pointer := getPointer(isLast)
+	fmt.Printf("%s%s%s%s\n", prefix, pointer, icon, fullPath)
 
-		fmt.Print(prefix + pointers[0])
-		icon := icons["other"]
-
-		if entry.IsDir() {
-			fmt.Print(icons["directory"])
-			dirs++
-		} else if entry.Type()&os.ModeSymlink != 0 {
-			fmt.Print(icons["symlink"])
-		} else {
-			ext := filepath.Ext(entry.Name())
-			if val, ok := icons[ext]; ok {
-				fmt.Print(val)
-			} else {
-				fmt.Print(icon)
-			}
-			files++
-		}
-		fmt.Println(fullPath)
-
-		if entry.IsDir() {
-			walk(filepath.Join(directory, entry.Name()), prefix+pointers[1], args, currentDepth+1)
-		}
+	if entry.IsDir() {
+		dirs++
+	} else {
+		files++
 	}
+}
 
-	return nil
+func getIcon(entry os.DirEntry) string {
+	if entry.IsDir() {
+		return iconDirectory
+	} else if entry.Type()&os.ModeSymlink != 0 {
+		return iconSymlink
+	} else {
+		ext := filepath.Ext(entry.Name())
+		if icon, ok := icons[ext]; ok {
+			return icon
+		}
+		if entry.Type().Perm()&0111 != 0 {
+			return iconExecutable
+		}
+		return iconOther
+	}
+}
+
+func getFullPath(entry os.DirEntry, directory string, args Args) string {
+	if args.FullPath {
+		return filepath.Join(directory, entry.Name())
+	}
+	return entry.Name()
+}
+
+func getPointer(isLast bool) string {
+	if isLast {
+		return finalPointer
+	}
+	return innerPointer
+}
+
+func getNextPrefix(index, length int) string {
+	if index == length-1 {
+		return finalPointerSpace
+	}
+	return innerPointerSpace
 }
 
 func main() {
@@ -202,12 +252,11 @@ func main() {
 	}
 
 	if args.Version {
-		fmt.Println(version)
+		fmt.Println(defaultVersion)
 		return
 	}
 
-	err := walk(args.Dir, "", args, 1)
-	if err != nil {
+	if err := walk(args.Dir, "", args, 1); err != nil {
 		fmt.Println("Error:", err)
 	}
 
