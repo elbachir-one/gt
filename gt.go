@@ -116,7 +116,7 @@ var dirs, files int
 
 func parseArgs() Args {
 	var args Args
-	flag.BoolVar(&args.Help, "?", false, helpDescription)
+	flag.BoolVar(&args.Help, "h", false, helpDescription)
 	flag.BoolVar(&args.Version, "v", false, versionDescription)
 	flag.BoolVar(&args.ShowHidden, "s", false, showHiddenDescription)
 	flag.BoolVar(&args.Unsort, "u", false, unsortDescription)
@@ -124,12 +124,45 @@ func parseArgs() Args {
 	flag.BoolVar(&args.DirsOnly, "d", false, dirsOnlyDescription)
 	flag.BoolVar(&args.FullPath, "f", false, fullPathDescription)
 	flag.BoolVar(&args.OrderByExt, "o", false, orderByExtDescription)
-	flag.IntVar(&args.Depth, "t", -1, depthDescription)
+	flag.IntVar(&args.Depth, "depth", -1, depthDescription)
 
+	// Manually parse combined short flags
+	for _, arg := range os.Args[1:] {
+		if strings.HasPrefix(arg, "-") && !strings.HasPrefix(arg, "--") && len(arg) > 2 {
+			for _, char := range arg[1:] {
+				switch char {
+				case 'h':
+					args.Help = true
+				case 'v':
+					args.Version = true
+				case 's':
+					args.ShowHidden = true
+				case 'u':
+					args.Unsort = true
+				case 'm':
+					args.Summary = true
+				case 'd':
+					args.DirsOnly = true
+				case 'f':
+					args.FullPath = true
+				case 'o':
+					args.OrderByExt = true
+				default:
+					fmt.Printf("flag provided but not defined: -%c\n", char)
+					os.Exit(1)
+				}
+			}
+			// Remove the combined short flag from os.Args to prevent flag.Parse from failing
+			os.Args = append(os.Args[:1], os.Args[2:]...)
+		}
+	}
+
+	// Parse remaining flags
 	flag.Parse()
 
-	if len(flag.Args()) > 0 {
-		args.Dir = flag.Args()[0]
+	// Handle directory argument
+	if flag.NArg() > 0 {
+		args.Dir = flag.Arg(0)
 	} else {
 		args.Dir = defaultDirectory
 	}
@@ -137,130 +170,133 @@ func parseArgs() Args {
 	return args
 }
 
-func walk(directory, prefix string, args Args, currentDepth int) error {
-	if args.Depth != -1 && currentDepth > args.Depth {
+func walk(directory, prefix string, depth int, args Args) error {
+	if depth == 0 {
 		return nil
 	}
 
 	entries, err := os.ReadDir(directory)
 	if err != nil {
-		return fmt.Errorf("failed to read directory %s: %w", directory, err)
+		return err
 	}
 
-	filesList := filterEntries(entries, args)
-	sortEntries(filesList, args)
+	entries = filterEntries(entries, args)
 
-	for i, entry := range filesList {
-		printEntry(entry, prefix, i == len(filesList)-1, directory, args)
+	if !args.Unsort {
+		sort.Slice(entries, func(i, j int) bool {
+			if args.OrderByExt {
+				return strings.ToLower(filepath.Ext(entries[i].Name())) < strings.ToLower(filepath.Ext(entries[j].Name()))
+			}
+			return entries[i].Name() < entries[j].Name()
+		})
+	}
+
+	for i, entry := range entries {
+		printEntry(entry, prefix, i == len(entries)-1, args)
+
 		if entry.IsDir() {
-			if err := walk(filepath.Join(directory, entry.Name()), prefix+getNextPrefix(i, len(filesList)), args, currentDepth+1); err != nil {
+			dirs++
+			subPrefix := finalPointerSpace
+			if i != len(entries)-1 {
+				subPrefix = innerPointerSpace
+			}
+
+			err := walk(filepath.Join(directory, entry.Name()), prefix+subPrefix, depth-1, args)
+			if err != nil {
 				return err
 			}
-		}
+	} else {
+		files++
 	}
-
+	}
 	return nil
 }
 
 func filterEntries(entries []os.DirEntry, args Args) []os.DirEntry {
-	var filteredEntries []os.DirEntry
+	filtered := make([]os.DirEntry, 0, len(entries))
+
 	for _, entry := range entries {
-		if args.ShowHidden || entry.Name()[0] != '.' {
-			if args.DirsOnly && !entry.IsDir() {
-				continue
-			}
-			filteredEntries = append(filteredEntries, entry)
+		if args.DirsOnly && !entry.IsDir() {
+			continue
 		}
+
+		if !args.ShowHidden && strings.HasPrefix(entry.Name(), ".") {
+			continue
+		}
+
+		filtered = append(filtered, entry)
 	}
-	return filteredEntries
+
+	return filtered
 }
 
-func sortEntries(entries []os.DirEntry, args Args) {
-	if !args.Unsort {
-		sort.Slice(entries, func(i, j int) bool {
-			if args.OrderByExt {
-				extI := filepath.Ext(entries[i].Name())
-				extJ := filepath.Ext(entries[j].Name())
-				if extI == extJ {
-					return strings.ToLower(entries[i].Name()) < strings.ToLower(entries[j].Name())
-				}
-				return extI < extJ
-			}
-			return strings.ToLower(entries[i].Name()) < strings.ToLower(entries[j].Name())
-		})
-	}
-}
+func printEntry(entry os.DirEntry, prefix string, isLast bool, args Args) {
+	name := entry.Name()
 
-func printEntry(entry os.DirEntry, prefix string, isLast bool, directory string, args Args) {
-	icon := getIcon(entry)
-	fullPath := getFullPath(entry, directory, args)
-
-	pointer := getPointer(isLast)
-	fmt.Printf("%s%s%s%s\n", prefix, pointer, icon, fullPath)
-
-	if entry.IsDir() {
-		dirs++
+	if !args.FullPath {
+		name = filepath.Base(name)
 	} else {
-		files++
+		absPath, err := filepath.Abs(name)
+		if err != nil {
+			absPath = name
+		}
+		name = absPath
 	}
+
+	icon := getIcon(entry, name)
+	pointer := innerPointer
+	if isLast {
+		pointer = finalPointer
+	}
+
+	fmt.Printf("%s%s%s%s\n", prefix, pointer, icon, name)
 }
 
-func getIcon(entry os.DirEntry) string {
+func getIcon(entry os.DirEntry, name string) string {
+	if entry.Type()&os.ModeSymlink != 0 {
+		return iconSymlink
+	}
+
 	if entry.IsDir() {
 		return iconDirectory
-	} else if entry.Type()&os.ModeSymlink != 0 {
-		return iconSymlink
-	} else {
-		ext := filepath.Ext(entry.Name())
-		if icon, ok := icons[ext]; ok {
-			return icon
-		}
-		if entry.Type().Perm()&0111 != 0 {
-			return iconExecutable
-		}
-		return iconOther
 	}
+
+	if entry.Type()&0111 != 0 {
+		return iconExecutable
+	}
+
+	ext := filepath.Ext(name)
+	if icon, ok := icons[ext]; ok {
+		return icon
+	}
+
+	return iconOther
 }
 
-func getFullPath(entry os.DirEntry, directory string, args Args) string {
-	if args.FullPath {
-		return filepath.Join(directory, entry.Name())
-	}
-	return entry.Name()
-}
-
-func getPointer(isLast bool) string {
-	if isLast {
-		return finalPointer
-	}
-	return innerPointer
-}
-
-func getNextPrefix(index, length int) string {
-	if index == length-1 {
-		return finalPointerSpace
-	}
-	return innerPointerSpace
+func printSummary() {
+	fmt.Printf("\n\033[32m%d directories, %d files\033[0m\n", dirs, files)
 }
 
 func main() {
 	args := parseArgs()
 
 	if args.Help {
-		flag.Usage()
+		fmt.Printf("Usage: gt [OPTION]... [DIRECTORY]...\n")
+		flag.PrintDefaults()
 		return
 	}
 
 	if args.Version {
-		fmt.Println(defaultVersion)
+		fmt.Printf("%s\n", defaultVersion)
 		return
 	}
 
-	if err := walk(args.Dir, "", args, 1); err != nil {
-		fmt.Println("Error:", err)
+	err := walk(args.Dir, "", args.Depth, args)
+	if err != nil {
+		fmt.Printf("Error: %s\n", err)
 	}
 
 	if args.Summary {
-		fmt.Printf("\n%d directories, %d files\n", dirs, files)
+		printSummary()
 	}
 }
