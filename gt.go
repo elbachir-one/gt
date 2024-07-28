@@ -10,16 +10,16 @@ import (
 )
 
 const (
-	helpDescription        = "show help"
-	versionDescription     = "show version"
-	showHiddenDescription  = "show hidden files"
-	unsortDescription      = "unsort files"
-	summaryDescription     = "show summary"
-	dirsOnlyDescription    = "list directories only"
-	fullPathDescription    = "print full path prefix to each file"
-	orderByExtDescription  = "order files based on extension"
-	depthDescription       = "depth to which the tree should be displayed"
-	defaultVersion         = "gt: v0.4.1"
+	helpDescription        = "Help"
+	versionDescription     = "Show version"
+	showHiddenDescription  = "Show hidden files"
+	unsortDescription      = "Unsort files"
+	summaryDescription     = "Show summary"
+	dirsOnlyDescription    = "List directories only"
+	fullPathDescription    = "Print full path prefix to each file"
+	orderByExtDescription  = "Order files based on extension"
+	depthDescription       = "Depth to which the tree should be displayed"
+	defaultVersion         = "gt: v1.2.0"
 	defaultDirectory       = "."
 	iconOther              = "\033[1m \033[0m"
 	iconDirectory          = "\033[34;1m \033[0m"
@@ -126,7 +126,6 @@ func parseArgs() Args {
 	flag.BoolVar(&args.OrderByExt, "o", false, orderByExtDescription)
 	flag.IntVar(&args.Depth, "depth", -1, depthDescription)
 
-	// Manually parse combined short flags
 	for _, arg := range os.Args[1:] {
 		if strings.HasPrefix(arg, "-") && !strings.HasPrefix(arg, "--") && len(arg) > 2 {
 			for _, char := range arg[1:] {
@@ -152,15 +151,12 @@ func parseArgs() Args {
 					os.Exit(1)
 				}
 			}
-			// Remove the combined short flag from os.Args to prevent flag.Parse from failing
 			os.Args = append(os.Args[:1], os.Args[2:]...)
 		}
 	}
 
-	// Parse remaining flags
 	flag.Parse()
 
-	// Handle directory argument
 	if flag.NArg() > 0 {
 		args.Dir = flag.Arg(0)
 	} else {
