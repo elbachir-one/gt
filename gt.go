@@ -97,6 +97,7 @@ var icons = map[string]string{
 	"directory":   "\033[34;1m \033[0m",
 	"other":       "\033[1m \033[0m",
 	"symlink":     "\033[36m \033[0m",
+  ".ts":         "\033[38;2;49;120;198m󰛦 \033[0m",
 }
 
 type Args struct {

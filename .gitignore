@@ -2,5 +2,5 @@ gt
 build.sh
 tests/
 .goreleaser.yaml
-
+iconFiles/
 dist/
