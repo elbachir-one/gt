@@ -24,6 +24,7 @@ const (
 	iconOther              = "\033[1m \033[0m"
 	iconDirectory          = "\033[34;1m \033[0m"
 	iconSymlink            = "\033[36m \033[0m"
+	iconSymlinkDir         = "\033[36;1m \033[0m"
 	iconExecutable         = "\033[32m \033[0m"
 	innerPointer           = "├── "
 	finalPointer           = "└── "
@@ -94,10 +95,56 @@ var icons = map[string]string{
 	".otf":        "\033[97m󰛖 \033[0m",
 	".db":         "\033[97m󰆼 \033[0m",
 	".exe":        "\033[34m \033[0m",
+	".patch":      "\033[37m \033[0m",
+	".diff":       "\033[37m \033[0m",
+	".tex":        "\033[38;5;180m \033[0m",
+	".ini":        "\033[33m󰘓 \033[0m",
+	".zst":        "\033[35m \033[0m",
+	".bash":       "\033[92m \033[0m",
+	".jai":        "\033[38;5;22m \033[0m",
+	".r":          "\033[38;5;18m󰟔 \033[0m",
+	".swift":      "\033[38;5;214m \033[0m",
+	".hs":         "\033[38;5;135m \033[0m",
+	".v":          "\033[32m \033[0m",
+	".lock":       "\033[38;5;172m󱧈 \033[0m",
+	".ts":         "\033[34m \033[0m",
+	".log":        "\033[37m \033[0m",
+	".app":        "\033[37m \033[0m",
+	".bat":        "\033[38;5;208m󰭟 \033[0m",
+	".7z":         "\033[90m \033[0m",
+	".odt":        "\033[94m󰈬 \033[0m",
+	".ods":        "\033[92m󰈛 \033[0m",
+	".odp":        "\033[38;5;214m󰈧 \033[0m",
 	"directory":   "\033[34;1m \033[0m",
 	"other":       "\033[1m \033[0m",
 	"symlink":     "\033[36m \033[0m",
+	"symlink_dir": "\033[36;1m \033[0m",
 }
+
+var directoryIcons = map[string]string{
+	    "default":      " ",
+        "Music":        "󱍙 ",
+        "Downloads":    "󰉍 ",
+        "Videos":       " ",
+        "Documents":    " ",
+        "Pictures":     " ",
+        "dotfiles":     "󱗜 ",
+        "Public":       " ",
+	    "src":          "󰳐 ",
+	    "bin":          " ",
+	    "docs":         " ",
+        "lib":          " ",
+	    ".github":      " ",
+	    ".git":         " ",
+        ".config":      " ",
+        ".ssh":         "󰣀 ",
+        ".gnupg":       "󰢬 ",
+        ".icons":       " ",
+        ".fonts":       " ",
+        ".cache":       "󰃨 ",
+        ".emacs.d":     " ",
+        ".vim":         " ",
+    }
 
 type Args struct {
 	Help         bool
@@ -245,7 +292,7 @@ func printEntry(entry os.DirEntry, prefix string, isLast bool, args Args) {
 		pointer = finalPointer
 	}
 
-	fmt.Printf("%s%s%s%s\n", prefix, pointer, icon, name)
+    fmt.Printf("%s%s%s %s\n", prefix, pointer, icon, name)
 }
 
 func getIcon(entry os.DirEntry, name string) string {
@@ -295,4 +342,13 @@ func main() {
 	if args.Summary {
 		printSummary()
 	}
+}
+
+func getDirectoryIcon(directory string) string {
+	for dirType, icon := range directoryIcons {
+		if filepath.Base(directory) == dirType {
+			return icon
+		}
+	}
+	return directoryIcons["default"]
 }
