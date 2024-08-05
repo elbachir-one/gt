@@ -168,17 +168,18 @@ func parseArgs() Args {
 					args.Unsort = true
 				case 'm':
 					args.Summary = true
-				case 'd':
-					args.DirsOnly = true
-				case 'f':
-					args.FullPath = true
-				case 'o':
-					args.OrderByExt = true
-				default:
-					fmt.Printf("flag provided but not defined: -%c\n", char)
-					os.Exit(1)
-				}
+        case 'd':
+          args.DirsOnly = true
+        case 'f':
+          args.FullPath = true
+        case 'o':
+          args.OrderByExt = true
+        default:
+          fmt.Printf("flag provided but not defined: -%c\n", char)
+          os.Exit(1)
+        }
       }
+      os.Args = append(os.Args[:1], os.Args[2:]...)
     }
   }
 
