@@ -37,7 +37,7 @@ var icons = map[string]string{
 	".cpp":        "\033[34m \033[0m",
 	".cs":         "\033[34m󰌛 \033[0m",
 	".css":        "\033[34m \033[0m",
-	".js":         "\033[33m󰌞 \033[0m",
+	".js":         "\033[38;5;227m󰌞 \033[0m",
 	".json":       "\033[93m \033[0m",
 	".php":        "\033[38;5;39m \033[0m",
 	".sqlite":     "\033[38;5;22m \033[0m",
@@ -91,8 +91,40 @@ var icons = map[string]string{
 	".org":        "\033[38;5;125m \033[0m",
 	".vim":        "\033[32m \033[0m",
 	".epub":       "\033[94m󰂺 \033[0m",
-	".ttf":        "\033[97m \033[0m",
 	".otf":        "\033[97m󰛖 \033[0m",
+	".ttf":        "\033[97m \033[0m",
+  ".exe":        "\033[34m \033[0m",
+  "directory":   "\033[34;1m \033[0m",
+  "other":       "\033[1m \033[0m",
+  "symlink":     "\033[36m \033[0m",
+  ".ts":         "\033[38;2;49;120;198m󰛦 \033[0m", 
+  ".R":          "\033[38;2;34;104;180m \033[0m",
+  ".asm":         "\033[37m \033[0m",
+  ".bash":        "\033[32m \033[0m",
+  ".clj":         "\033[38;2;104;180;63m \033[0m",
+  ".cr":          "\033[30m \033[0m",
+  ".dart":       "\033[38;5;32m \033[0m",
+  ".scala":       "\033[38;5;196m \033[0m", 
+  ".erl":        "\033[38;5;88m \033[0m",
+  ".ex":         "\033[38;5;56m \033[0m",
+  ".exs":         "\033[38;5;56m \033[0m",
+  ".f90":        "\033[38;5;99m󱈚 \033[0m",
+  ".fs":         "\033[38;5;72m \033[0m",
+  ".gd":         "\033[38;5;74m \033[0m",
+  ".groovy":     "\033[38;5;15m \033[0m",
+  ".hs":         "\033[38;5;97m \033[0m",
+  ".jl":         "\033[38;5;250m \033[0m",
+  ".kt":         "\033[38;5;250m \033[0m",
+  ".lisp":       "\033[38;5;74m󰅲 \033[0m",
+  ".lua":        "\033[38;5;21m \033[0m",
+  ".m":          "\033[38;5;21m \033[0m",
+  ".ml":         "\033[38;5;208m \033[0m",
+  ".nim":        "\033[38;5;227m \033[0m",
+  ".pl":         "\033[38;5;24m \033[0m",
+  ".ps1":        "\033[38;5;21m󰨊 \033[0m",
+  ".sql":        "\033[38;5;250m \033[0m",
+  ".swift":      "\033[38;5;166m \033[0m",
+  ".ejs":        "\033[38;5;227m \033[0m",
 	".db":         "\033[97m󰆼 \033[0m",
 	".exe":        "\033[34m \033[0m",
 	".patch":      "\033[37m \033[0m",
@@ -122,7 +154,7 @@ var icons = map[string]string{
 }
 
 var directoryIcons = map[string]string{
-	    "default":      " ",
+	      "default":      " ",
         "Music":        "󱍙 ",
         "Downloads":    "󰉍 ",
         "Videos":       " ",
@@ -130,12 +162,12 @@ var directoryIcons = map[string]string{
         "Pictures":     " ",
         "dotfiles":     "󱗜 ",
         "Public":       " ",
-	    "src":          "󰳐 ",
-	    "bin":          " ",
-	    "docs":         " ",
+	      "src":          "󰳐 ",
+	      "bin":          " ",
+	      "docs":         " ",
         "lib":          " ",
-	    ".github":      " ",
-	    ".git":         " ",
+	      ".github":      " ",
+	      ".git":         " ",
         ".config":      " ",
         ".ssh":         "󰣀 ",
         ".gnupg":       "󰢬 ",
@@ -187,20 +219,20 @@ func parseArgs() Args {
 					args.Unsort = true
 				case 'm':
 					args.Summary = true
-				case 'd':
-					args.DirsOnly = true
-				case 'f':
-					args.FullPath = true
-				case 'o':
-					args.OrderByExt = true
-				default:
-					fmt.Printf("flag provided but not defined: -%c\n", char)
-					os.Exit(1)
-				}
-			}
-			os.Args = append(os.Args[:1], os.Args[2:]...)
-		}
-	}
+        case 'd':
+          args.DirsOnly = true
+        case 'f':
+          args.FullPath = true
+        case 'o':
+          args.OrderByExt = true
+        default:
+          fmt.Printf("flag provided but not defined: -%c\n", char)
+          os.Exit(1)
+        }
+      }
+      os.Args = append(os.Args[:1], os.Args[2:]...)
+    }
+  }
 
 	flag.Parse()
 
