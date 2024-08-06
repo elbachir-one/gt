@@ -2,9 +2,9 @@
 
 ![image-gt](https://i.postimg.cc/Dzp2zHJ7/gtshoot.png)
 <br>
-`gt`, is a command-line tool written in Go that displays a tree of files
-and directories with colored icons.
 <br>
+#### `gt`, is a command-line tool written in Go that displays a tree of files and directories with colored icons.
+
 ## Features
 
 - Displays a tree of files and directories.
