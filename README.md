@@ -22,20 +22,22 @@
 
 2. Clone the repository
 
+2-1. Go
 ```bash
-   git clone https://github.com/elbachir-one/gt
-   cd gt/
-   go build
-   ./gt
-```
-
-3. Install
-
-```bash
+    git clone https://github.com/elbachir-one/gt
+    cd gt/
+    go build
     sudo cp gt /usr/local/bin/gt
     gt
 ```
+2-2. Using the Makefile
 
+``` bash
+     git clone --depth 1 https://github.com/elbachir-one/gt
+    cd gt/
+    make
+    sudo make install
+```
 
 #### Note: gt is in the [AUR](https://aur.archlinux.org/packages/gt), and a [template](https://github.com/elbachir-one/void-templates) is available for Void Linux.
 
@@ -51,7 +53,7 @@
     cd void-packages/
     ./xbps-src binary-bootstrap
     mkdir srcpkgs/gt
-    vim srcpkgs/gt/template
+    vim srcpkgs/gt/template # Use you own editor
 ```
 Past the content of this
 [template](https://github.com/elbachir-one/void-templates) to your local
@@ -64,6 +66,9 @@ template and save it.
 
 ## Usage
 
+```bash
+    gt
+```
 ```bash
     gt [OPTIONS] [DIRECTORY]
 ```
