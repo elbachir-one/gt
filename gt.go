@@ -9,165 +9,6 @@ import (
 	"strings"
 )
 
-const (
-	helpDescription        = "Help"
-	versionDescription     = "Show version"
-	showHiddenDescription  = "Show hidden files"
-	unsortDescription      = "Unsort files"
-	summaryDescription     = "Show summary"
-	dirsOnlyDescription    = "List directories only"
-	fullPathDescription    = "Print full path prefix to each file"
-	orderByExtDescription  = "Order files based on extension"
-	depthDescription       = "Depth to which the tree should be displayed"
-	defaultVersion         = "gt: v1.2.0"
-	defaultDirectory       = "."
-	iconOther              = "\033[1m \033[0m"
-	iconDirectory          = "\033[34;1m \033[0m"
-	iconSymlink            = "\033[36m \033[0m"
-	iconSymlinkDir         = "\033[36;1m \033[0m"
-	iconExecutable         = "\033[32m \033[0m"
-	innerPointer           = "├── "
-	finalPointer           = "└── "
-	innerPointerSpace      = "│   "
-	finalPointerSpace      = "    "
-)
-
-var icons = map[string]string{
-	".c":          "\033[34m \033[0m",
-	".cpp":        "\033[34m \033[0m",
-	".cs":         "\033[34m󰌛 \033[0m",
-	".css":        "\033[34m \033[0m",
-	".js":         "\033[33m󰌞 \033[0m",
-	".json":       "\033[93m \033[0m",
-	".php":        "\033[38;5;39m \033[0m",
-	".sqlite":     "\033[38;5;22m \033[0m",
-	".sh":         "\033[32m \033[0m",
-	".iso":        "\033[37m󰨣 \033[0m",
-	".java":       "\033[31m \033[0m",
-	".ino":        "\033[34m \033[0m",
-	".rs":         "\033[90m \033[0m",
-	".go":         "\033[36m \033[0m",
-	".txt":        "\033[37m \033[0m",
-	".png":        "\033[35m \033[0m",
-	".jpg":        "\033[35m󰈥 \033[0m",
-	".jpeg":       "\033[35m \033[0m",
-	".webp":       "\033[35m \033[0m",
-	".mov":        "\033[31m󰨜 \033[0m",
-	".webm":       "\033[35m󰑈 \033[0m",
-	".m4a":        "\033[94m \033[0m",
-	".flac":       "\033[31m󱀞 \033[0m",
-	".wav":        "\033[31m󰗅 \033[0m",
-	".xcf":        "\033[34m \033[0m",
-	".tar":        "\033[31m󰞹 \033[0m",
-	".zip":        "\033[31m󰛫 \033[0m",
-	".gz":         "\033[31m󰛫 \033[0m",
-	".o":          "\033[33m󰆧 \033[0m",
-	".obj":        "\033[33m󰆧 \033[0m",
-	".out":        "\033[32m \033[0m",
-	"":            "\033[32m \033[0m",
-	".bin":        "\033[32m \033[0m",
-	".h":          "\033[35m \033[0m",
-	".hpp":        "\033[35m \033[0m",
-	".deb":        "\033[90m \033[0m",
-	".yml":        "\033[31m \033[0m",
-	".yaml":       "\033[31m \033[0m",
-	".html":       "\033[38;5;208m \033[0m",
-	".xml":        "\033[38;5;208m󰗀 \033[0m",
-	".py":         "\033[38;5;172m \033[0m",
-	".mp4":        "\033[38;5;198m󰕧 \033[0m",
-	".mkv":        "\033[33m󰃽 \033[0m",
-	".mp3":        "\033[38;5;39m \033[0m",
-	".gif":        "\033[38;5;198m󰵸 \033[0m",
-	".toml":       "\033[38;5;208m \033[0m",
-	".zig":        "\033[38;5;208m \033[0m",
-	".xbps":       "\033[38;5;22m \033[0m",
-	".svg":        "\033[35m󰜡 \033[0m",
-	".conf":       "\033[37m \033[0m",
-	".gitignore":  "\033[38;5;208m󰊢 \033[0m",
-	".md":         "\033[34m \033[0m",
-	".rb":         "\033[31m󰴭 \033[0m",
-	".pdf":        "\033[38;5;196m󰈦 \033[0m",
-	".el":         "\033[38;5;125m \033[0m",
-	".org":        "\033[38;5;125m \033[0m",
-	".vim":        "\033[32m \033[0m",
-	".epub":       "\033[94m󰂺 \033[0m",
-	".ttf":        "\033[97m \033[0m",
-	".otf":        "\033[97m󰛖 \033[0m",
-	".db":         "\033[97m󰆼 \033[0m",
-	".exe":        "\033[34m \033[0m",
-	".patch":      "\033[37m \033[0m",
-	".diff":       "\033[37m \033[0m",
-	".tex":        "\033[38;5;180m \033[0m",
-	".ini":        "\033[33m󰘓 \033[0m",
-	".zst":        "\033[35m \033[0m",
-	".bash":       "\033[92m \033[0m",
-	".jai":        "\033[38;5;22m \033[0m",
-	".swift":      "\033[38;5;214m \033[0m",
-	".hs":         "\033[38;5;135m \033[0m",
-	".v":          "\033[32m \033[0m",
-	".lock":       "\033[38;5;172m󱧈 \033[0m",
-	".ts":         "\033[34m \033[0m",
-	".log":        "\033[37m \033[0m",
-	".app":        "\033[37m \033[0m",
-	".bat":        "\033[38;5;208m󰭟 \033[0m",
-	".7z":         "\033[90m \033[0m",
-	".odt":        "\033[94m󰈬 \033[0m",
-	".ods":        "\033[92m󰈛 \033[0m",
-	".odp":        "\033[38;5;214m󰈧 \033[0m",
-    ".R":          "\033[38;2;34;104;180m \033[0m",
-    ".asm":        "\033[37m \033[0m",
-    ".clj":        "\033[38;2;104;180;63m \033[0m",
-    ".cr":         "\033[30m \033[0m",
-    ".dart":       "\033[38;5;32m \033[0m",
-    ".scala":      "\033[38;5;196m \033[0m",
-    ".erl":        "\033[38;5;88m \033[0m",
-    ".ex":         "\033[38;5;56m \033[0m",
-    ".exs":        "\033[38;5;56m \033[0m",
-    ".f90":        "\033[38;5;99m󱈚 \033[0m",
-    ".fs":         "\033[38;5;72m \033[0m",
-    ".gd":         "\033[38;5;74m \033[0m",
-    ".groovy":     "\033[38;5;15m \033[0m",
-    ".jl":         "\033[38;5;250m \033[0m",
-    ".kt":         "\033[38;5;250m \033[0m",
-    ".lisp":       "\033[38;5;74m󰅲 \033[0m",
-    ".m":          "\033[38;5;21m \033[0m",
-    ".ml":         "\033[38;5;208m \033[0m",
-    ".nim":        "\033[38;5;227m \033[0m",
-    ".pl":         "\033[38;5;24m \033[0m",
-    ".ps1":        "\033[38;5;21m󰨊 \033[0m",
-    ".sql":        "\033[38;5;250m \033[0m",
-    ".ejs":        "\033[38;5;227m \033[0m",
-    "directory":   "\033[34;1m \033[0m",
-    "other":       "\033[1m \033[0m",
-    "symlink":     "\033[36m \033[0m",
-    "symlink_dir": "\033[36;1m \033[0m",
-}
-
-var directoryIcons = map[string]string{
-	    "default":      " ",
-        "Music":        "󱍙 ",
-        "Downloads":    "󰉍 ",
-        "Videos":       " ",
-        "Documents":    " ",
-        "Pictures":     " ",
-        "dotfiles":     "󱗜 ",
-        "Public":       " ",
-	    "src":          "󰳐 ",
-	    "bin":          " ",
-	    "docs":         " ",
-        "lib":          " ",
-	    ".github":      " ",
-	    ".git":         " ",
-        ".config":      " ",
-        ".ssh":         "󰣀 ",
-        ".gnupg":       "󰢬 ",
-        ".icons":       " ",
-        ".fonts":       " ",
-        ".cache":       "󰃨 ",
-        ".emacs.d":     " ",
-        ".vim":         " ",
-    }
-
 type Args struct {
 	Help         bool
 	Version      bool
@@ -186,13 +27,21 @@ var dirs, files int
 func parseArgs() Args {
 	var args Args
 	flag.BoolVar(&args.Help, "h", false, helpDescription)
+	flag.BoolVar(&args.Help, "help", false, helpDescription)
 	flag.BoolVar(&args.Version, "v", false, versionDescription)
-	flag.BoolVar(&args.ShowHidden, "s", false, showHiddenDescription)
+	flag.BoolVar(&args.Version, "version", false, versionDescription)
+	flag.BoolVar(&args.ShowHidden, "a", false, showHiddenDescription)
+	flag.BoolVar(&args.ShowHidden, "all", false, showHiddenDescription)
 	flag.BoolVar(&args.Unsort, "u", false, unsortDescription)
+	flag.BoolVar(&args.Unsort, "unsorted", false, unsortDescription)
 	flag.BoolVar(&args.Summary, "m", false, summaryDescription)
+	flag.BoolVar(&args.Summary, "summary", false, summaryDescription)
 	flag.BoolVar(&args.DirsOnly, "d", false, dirsOnlyDescription)
+	flag.BoolVar(&args.DirsOnly, "directories", false, dirsOnlyDescription)
 	flag.BoolVar(&args.FullPath, "f", false, fullPathDescription)
+	flag.BoolVar(&args.FullPath, "full-path", false, fullPathDescription)
 	flag.BoolVar(&args.OrderByExt, "o", false, orderByExtDescription)
+	flag.BoolVar(&args.OrderByExt, "order-by-extension", false, orderByExtDescription)
 	flag.IntVar(&args.Depth, "depth", -1, depthDescription)
 
 	for _, arg := range os.Args[1:] {
