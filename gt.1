@@ -1,0 +1,74 @@
+.\" Man page for gt
+.\" Contact: bachiralfa@gmail.com
+.TH GT 1 "August 2024" "Version 1.4.2" "User Commands"
+
+.SH NAME
+gt \- a command-line utility for recursive directory listing.
+
+.SH SYNOPSIS
+.B gt
+.RB [ OPTIONS ]
+.RB [ DIRECTORY ]
+
+.SH DESCRIPTION
+.B gt
+is a tree-like command-line tool designed for recursive directory listing. It provides various options to customize the output, such as showing hidden files, sorting the results, and limiting the depth of the directory tree.
+
+.SH OPTIONS
+.TP
+.B \-h, \--help
+Show help message and exit.
+.TP
+.B \-v, \--version
+Show version information and exit.
+.TP
+.B \-a, \--all
+Include hidden files and directories in the listing.
+.TP
+.B \-u, \--unsorted
+List files and directories without sorting.
+.TP
+.B \-m, \--summary
+Display a summary at the end, such as the number of files and directories.
+.TP
+.B \-d, \--directories
+List only directories, excluding files.
+.TP
+.B \-f, \--full-path
+Display the full path for files and directories.
+.TP
+.B \-o, \--order-by-extension
+Order files based on their extension.
+.TP
+.B \--depth
+Limit the depth of the directory tree. For example, \fB--depth 2\fR will only show two levels of directories.
+
+.SH EXAMPLES
+.TP
+.B gt
+List all files and directories in the current directory recursively.
+.TP
+.B gt \-a
+List all files, including hidden ones.
+.TP
+.B gt \-d
+List only directories.
+.TP
+.B gt \-f \-o
+List all files with their full paths and order them by extension.
+.TP
+.B gt \--depth 2
+List files and directories up to a depth of two levels.
+.TP
+.B gt /path/to/directory
+List all files and directories within the specified directory.
+
+.SH AUTHOR
+.B github.com/elbachir-one
+.br
+Contact: bachiralfa@gmail.com
+
+.SH SEE ALSO
+.BR ls (1),
+.BR find (1),
+.BR grep (1)
