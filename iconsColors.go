@@ -159,7 +159,7 @@ const (
 	fullPathDescription    = "Print full path prefix to each file"
 	orderByExtDescription  = "Order files based on extension"
 	depthDescription       = "Depth to which the tree should be displayed"
-	defaultVersion         = "gt: v1.2.0"
+	defaultVersion         = "gt: v1.3.1"
 	defaultDirectory       = "."
 )
 
