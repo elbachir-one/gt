@@ -214,12 +214,3 @@ func main() {
 		printSummary()
 	}
 }
-
-func getDirectoryIcon(directory string) string {
-	for dirType, icon := range directoryIcons {
-		if filepath.Base(directory) == dirType {
-			return icon
-		}
-	}
-	return directoryIcons["default"]
-}
