@@ -28,6 +28,7 @@
     cd gt/
     go build
     sudo cp gt /usr/local/bin/gt
+    sudo cp gt.1 /usr/local/share/man/man1/ # To copy the man page.
     gt
 ```
 2-2. Using the Makefile
@@ -91,14 +92,14 @@ Options:
 
 | Option  | Description                                                                                                                    | example                                          |
 |---------|--------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------|
-| -h      | Show help                                                                                                                      | ![-h](https://i.postimg.cc/647QG2YT/h.png)       |
-| -v      | Show version                                                                                                                   | ![-v](https://i.postimg.cc/xk0T3Ftw/v.png)       |
-| -s      | Show hidden files                                                                                                              | ![-s](https://i.postimg.cc/4YR3m3tN/s.png)       |
-| -u      | Files                                                                                                                          | ![-u](https://i.postimg.cc/Bj5nDGc5/u.png)       |
-| -m      | Summary                                                                                                                        | ![-m](https://i.postimg.cc/PNcJny5D/m.png)       |
-| -d      | List directories only                                                                                                          | ![-d](https://i.postimg.cc/YGD99fNJ/d.png)       |
-| -o      | Order files based on extension                                                                                                 | ![-o](https://i.postimg.cc/VdC6ftJV/o.png)       |
-| -f      | Print full path prefix to each file                                                                                            | ![-f](https://i.postimg.cc/mhhknJBR/f.png)       |
+| -h --help | Show help                                                                                                                      | ![-h](https://i.postimg.cc/647QG2YT/h.png)       |
+| -v --version | Show version                                                                                                                   | ![-v](https://i.postimg.cc/xk0T3Ftw/v.png)       |
+| -a --all | Show hidden files                                                                                                              | ![-s](https://i.postimg.cc/4YR3m3tN/s.png)       |
+| -u --unsorted | Files                                                                                                                          | ![-u](https://i.postimg.cc/Bj5nDGc5/u.png)       |
+| -m --summary | Summary                                                                                                                        | ![-m](https://i.postimg.cc/PNcJny5D/m.png)       |
+| -d --directories | List directories only                                                                                                          | ![-d](https://i.postimg.cc/YGD99fNJ/d.png)       |
+| -o  --order-by-extension | Order files based on extension                                                                                                 | ![-o](https://i.postimg.cc/VdC6ftJV/o.png)       |
+| -f --full-path | Print full path prefix to each file                                                                                            | ![-f](https://i.postimg.cc/mhhknJBR/f.png)       |
 | --depth | Depth to which the tree should be displaye the default is -1 `gt --depth 1` any number greater than or equal to 1 can be used. | ![--depth](https://i.postimg.cc/yg8xsrRm/dd.png) |
 
 ## Contributing
