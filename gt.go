@@ -52,7 +52,7 @@ func parseArgs() Args {
 					args.Help = true
 				case 'v':
 					args.Version = true
-				case 's':
+				case 'a':
 					args.ShowHidden = true
 				case 'u':
 					args.Unsort = true
