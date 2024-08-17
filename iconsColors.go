@@ -136,7 +136,7 @@ const (
 	fullPathDescription    = "Print full path prefix to each file"
 	orderByExtDescription  = "Order files based on extension"
 	depthDescription       = "Depth to which the tree should be displayed"
-	defaultVersion         = "gt: v1.3.1"
+	defaultVersion         = "gt: v1.3.2"
 	defaultDirectory       = "."
 )
 
@@ -182,4 +182,76 @@ const (
 	darkYellow    = "\033[38;5;172m"
 	darkRed       = "\033[38;5;124m"
 	darkBlue      = "\033[38;5;18m"
+)
+
+var (
+	specialFiles = map[string]string{
+		"Makefile":       darkBlue + " " + reset,
+		"Dockerfile":     blue + " " + reset,
+		"LICENSE":        gray + " " + reset,
+		"config":         lightGray + " " + reset,
+		"PKGBUILD":       brightBlue + "󰣇 " + reset,
+		"Gemfile":        brightRed + " " + reset,
+		"template":       darkRed + " " + reset,
+		"TODO":           lightCyanBlue + " " + reset,
+		"CHANGELOG":      lightGray + " " + reset,
+		"FAQ":            lightGray + "󰦨 " + reset,
+		"LEGACY":         lightBrown + "󰦨 " + reset,
+		"bookmarks":      lightBrown + " " + reset,
+		"history":        lightBrown + " " + reset,
+		".gitconfig":     darkOrange + " " + reset,
+		".gitignore":     darkOrange + " " + reset,
+		".gitattributes": darkOrange + " " + reset,
+		".xinitrc":       lightGray + " " + reset,
+		".bashrc":        lightGray + "󱆃 " + reset,
+		".bash_profile":  lightGray + "󱆃 " + reset,
+		".bash_history":  lightGray + " " + reset,
+		".zshrc":         lightGray + "󱆃 " + reset,
+		".vscode":        blue + " " + reset,
+		".vimrc":         darkGreen + " " + reset,
+		".yarnrc":        lightRed + " " + reset,
+		".npmrc":         red + " " + reset,
+		".emacs":         magenta + " " + reset,
+		".inputrc":       lightGray + " " + reset,
+	}
+
+	specialDirs = map[string]string{
+		"Music":       blue + "󱍙 " + reset,
+		"Downloads":   blue + "󰉍 " + reset,
+		"Videos":      blue + "󰨜 " + reset,
+		"Documents":   blue + " " + reset,
+		"Pictures":    blue + " " + reset,
+		"dotfiles":    blue + "󱗜 " + reset,
+		"Public":      blue + " " + reset,
+		"Movies":      blue + "󰎁 " + reset,
+		"src":         blue + "󱧼 " + reset,
+		"bin":         blue + " " + reset,
+		"docs":        blue + " " + reset,
+		"lib":         blue + " " + reset,
+		"share":       blue + " " + reset,
+		"pkg":         blue + "󰏓 " + reset,
+		"nvim":        blue + " " + reset,
+		"kdenlive":    blue + " " + reset,
+		"discord":     blue + " " + reset,
+		"chromium":    blue + " " + reset,
+		"qutebrowser": blue + " " + reset,
+		"blender":     blue + "󰂫 " + reset,
+		"Electron":    blue + "󱀤 " + reset,
+		"GIMP":        blue + " " + reset,
+		"go":          blue + "󰟓 " + reset,
+		".firefox":    blue + " " + reset,
+		".github":     blue + " " + reset,
+		".git":        blue + " " + reset,
+		".config":     blue + " " + reset,
+		".ssh":        blue + "󰣀 " + reset,
+		".gnupg":      blue + "󰢬 " + reset,
+		".icons":      blue + " " + reset,
+		".fonts":      blue + " " + reset,
+		".cache":      blue + "󰃨 " + reset,
+		".emacs.d":    blue + " " + reset,
+		".themes":     blue + "󰔎 " + reset,
+		".npm":        blue + " " + reset,
+		".vim":        blue + " " + reset,
+		".local":      blue + "󱂀 " + reset,
+	}
 )

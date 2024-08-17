@@ -172,7 +172,14 @@ func getIcon(entry os.DirEntry, name string) string {
 	}
 
 	if entry.IsDir() {
+		if icon, ok := specialDirs[name]; ok {
+			return icon
+		}
 		return iconDirectory
+	}
+
+	if icon, ok := specialFiles[name]; ok {
+		return icon
 	}
 
 	if entry.Type()&0111 != 0 {
