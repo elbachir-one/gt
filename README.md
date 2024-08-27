@@ -34,7 +34,7 @@
 2-2. Using the Makefile
 
 ``` bash
-     git clone --depth 1 https://github.com/elbachir-one/gt
+    git clone --depth 1 https://github.com/elbachir-one/gt
     cd gt/
     make
     sudo make install
