@@ -1,3 +1,3 @@
-module gt
+module github.com/elbachir-one/gt
 
-go 1.23
+go 1.2
